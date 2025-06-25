@@ -2,7 +2,7 @@
   "name": "My Stonly PWA",
   "short_name": "Stonly",
   "description": "Progressive Web App wrapper for our Stonly Team guide.",
-  "start_url": "/stonly-pwa/",
+  "start_url": "/stonly-pwa/index.html",
   "scope": "/stonly-pwa/",
   "display": "standalone",
   "background_color": "#ffffff",
