@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Stonly PWA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0d89ff" />
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <div id="guide-container"></div>
+
+  <script src="https://stonly.com/js/widget.js" async></script>
+  <script>
+    window.onload = () => {
+      StonlyWidget.init({
+        guideId: 289783,
+        target: '#guide-container',
+        mode: 'inline'
+      });
+    };
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+</body>
+</html>
