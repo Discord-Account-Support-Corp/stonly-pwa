@@ -1,26 +1,50 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8">
   <title>My Stonly PWA</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0d89ff" />
-  <link rel="manifest" href="manifest.json">
-</head>
-<body>
-  <div id="guide-container"></div>
 
-  <script src="https://stonly.com/js/widget.js" async></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d89ff">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    html,body{margin:0;height:100%}
+    #guide-container{min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:sans-serif;color:#666}
+  </style>
+</head>
+
+<body>
+  <div id="guide-container">Loading guide…</div>
+
+  <!-- 1. Load widget.js, then init the guide -->
   <script>
-    window.onload = () => {
-      StonlyWidget.init({
-        guideId: 289783,
-        target: '#guide-container',
-        mode: 'inline'
-      });
-    };
+    (function () {
+      /* retry until the global appears or we give up */
+      function initWidget(tries = 0) {
+        if (window.StonlyWidget && typeof StonlyWidget.init === 'function') {
+          StonlyWidget.init({
+            guideId: 289783,          // 👈 your guide
+            target: '#guide-container',
+            mode: 'inline'
+          });
+        } else if (tries < 40) {      // 2 s worth of retries
+          setTimeout(() => initWidget(tries + 1), 50);
+        } else {
+          document.getElementById('guide-container').textContent =
+            'Failed to load the guide – check the console.';
+        }
+      }
+
+      /* inject Stonly’s script */
+      const s = document.createElement('script');
+      s.src = 'https://stonly.com/js/widget.js';
+      s.async = true;
+      s.onload = () => initWidget();  // call once it’s really loaded
+      document.head.appendChild(s);
+    })();
   </script>
 
+  <!-- 2. Register the service-worker (PWA requirement) -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js');
