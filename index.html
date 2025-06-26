@@ -1,5 +1,42 @@
-<iframe
-  src="https://app.stonly.com/guide/en/289783"
-  style="width:100%;height:100vh;border:none"
-  allowfullscreen>
-</iframe>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stonly Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d89ff">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: sans-serif;
+    }
+    .fallback {
+      text-align: center;
+      padding-top: 2em;
+      color: #666;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <iframe src="https://app.stonly.com/guide/en/289783" onerror="document.getElementById('fallback').style.display='block'; this.style.display='none';"></iframe>
+  
+  <div id="fallback" class="fallback" style="display:none;">
+    Couldn’t load the guide.<br>
+    <a href="https://app.stonly.com/guide/en/289783" target="_blank">Click here to open it manually.</a>
+  </div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+</body>
+</html>
