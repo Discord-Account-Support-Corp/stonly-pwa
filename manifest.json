@@ -1,7 +1,7 @@
 {
-  "name": "My Stonly PWA",
+  "name": "Stonly Dashboard",
   "short_name": "Stonly",
-  "description": "Progressive Web App wrapper for our Stonly Team guide.",
+  "description": "PWA shortcut to your Stonly team dashboard.",
   "start_url": "/stonly-pwa/index.html",
   "scope": "/stonly-pwa/",
   "display": "standalone",
