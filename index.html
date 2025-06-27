@@ -9,7 +9,10 @@
   <link rel="icon" href="icons/icon-192.png" />
   <style>
     html, body {
-      margin: 0; height: 100%; font-family: sans-serif; background: #fff;
+      margin: 0;
+      height: 100%;
+      font-family: sans-serif;
+      background: #fff;
     }
     #guide {
       height: 100vh;
@@ -36,43 +39,46 @@
   <script>
     // Register PWA service worker
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./service-worker.js');
+      navigator.serviceWorker.register('./service-worker.js').catch(err =>
+        console.warn("Service worker failed:", err)
+      );
     }
 
-    // Try to load via widget
-    (function() {
-      function tryInit(attempts = 0) {
+    // Try loading Stonly widget
+    (function () {
+      function mountWidget(attempts = 0) {
+        const target = document.getElementById("guide");
         if (window.StonlyWidget?.init) {
-          document.getElementById("guide").textContent = '';
-          StonlyWidget.init({
-            guideId: 289783,
-            target: '#guide',
-            mode: 'inline'
+          target.innerHTML = ""; // clear loading text
+          window.StonlyWidget.init({
+            guideId: 289783, // your guide ID
+            target: "#guide",
+            mode: "inline"
           });
         } else if (attempts < 30) {
-          setTimeout(() => tryInit(attempts + 1), 100);
+          setTimeout(() => mountWidget(attempts + 1), 100);
         } else {
-          showFallback();
+          showFallback("Could not load widget after multiple attempts.");
         }
       }
 
-      const s = document.createElement('script');
-      s.src = 'https://stonly.com/js/widget.js';
-      s.async = true;
-      s.onload = () => tryInit();
-      s.onerror = () => showFallback();
-      document.head.appendChild(s);
+      const script = document.createElement("script");
+      script.src = "https://stonly.com/js/widget.js";
+      script.async = true;
+      script.onload = () => mountWidget();
+      script.onerror = () => showFallback("Failed to load Stonly widget script.");
+      document.head.appendChild(script);
 
-      function showFallback() {
-        const guide = document.getElementById('guide');
-        const frame = document.getElementById('fallbackFrame');
+      function showFallback(reason) {
+        const guide = document.getElementById("guide");
+        const iframe = document.getElementById("fallbackFrame");
         guide.innerHTML = `
-          Couldn’t load the guide. <br />
+          ${reason}<br>
           <a href="https://app.stonly.com/guide/289783/published" target="_blank">
-            Click here to open it manually
+            Click here to open the guide manually
           </a>
         `;
-        frame.style.display = 'block';
+        iframe.style.display = "block";
       }
     })();
   </script>
