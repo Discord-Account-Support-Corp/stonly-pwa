@@ -1,42 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Stonly Guide</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0d89ff">
-  <link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0d89ff" />
+  <title>Stonly PWA</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.png" />
   <style>
     html, body {
-      margin: 0;
-      height: 100%;
-      font-family: sans-serif;
+      margin: 0; height: 100%; font-family: sans-serif; background: #fff;
     }
-    .fallback {
-      text-align: center;
-      padding-top: 2em;
+    #guide {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: #666;
+      font-size: 1.2rem;
+      text-align: center;
+      padding: 2rem;
     }
     iframe {
+      display: none;
       width: 100%;
-      height: 100%;
+      height: 100vh;
       border: none;
-      display: block;
     }
   </style>
 </head>
 <body>
-  <iframe src="https://app.stonly.com/guide/en/289783" onerror="document.getElementById('fallback').style.display='block'; this.style.display='none';"></iframe>
-  
-  <div id="fallback" class="fallback" style="display:none;">
-    Couldn’t load the guide.<br>
-    <a href="https://app.stonly.com/guide/en/289783" target="_blank">Click here to open it manually.</a>
-  </div>
+  <div id="guide">Loading guide…</div>
+  <iframe id="fallbackFrame" src="https://app.stonly.com/guide/289783/published"></iframe>
 
   <script>
+    // Register PWA service worker
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js');
+      navigator.serviceWorker.register('./service-worker.js');
     }
+
+    // Try to load via widget
+    (function() {
+      function tryInit(attempts = 0) {
+        if (window.StonlyWidget?.init) {
+          document.getElementById("guide").textContent = '';
+          StonlyWidget.init({
+            guideId: 289783,
+            target: '#guide',
+            mode: 'inline'
+          });
+        } else if (attempts < 30) {
+          setTimeout(() => tryInit(attempts + 1), 100);
+        } else {
+          showFallback();
+        }
+      }
+
+      const s = document.createElement('script');
+      s.src = 'https://stonly.com/js/widget.js';
+      s.async = true;
+      s.onload = () => tryInit();
+      s.onerror = () => showFallback();
+      document.head.appendChild(s);
+
+      function showFallback() {
+        const guide = document.getElementById('guide');
+        const frame = document.getElementById('fallbackFrame');
+        guide.innerHTML = `
+          Couldn’t load the guide. <br />
+          <a href="https://app.stonly.com/guide/289783/published" target="_blank">
+            Click here to open it manually
+          </a>
+        `;
+        frame.style.display = 'block';
+      }
+    })();
   </script>
 </body>
 </html>
