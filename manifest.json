@@ -1,24 +1,69 @@
-{
-  "name": "Stonly Dashboard",
-  "short_name": "Stonly",
-  "description": "PWA shortcut to your Stonly team dashboard.",
-  "start_url": "/stonly-pwa/index.html",
-  "scope": "/stonly-pwa/",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0d89ff",
-  "icons": [
-    {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help Scout PWA</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#317EFB"/>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #f9f9f9;
+      text-align: center;
     }
-  ],
-  "dir": "ltr",
-  "lang": "en-US"
-}
+    h1 { margin-bottom: 10px; }
+    p { margin: 0 0 20px 0; font-size: 1.1rem; }
+    button {
+      padding: 12px 24px;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      background-color: #317EFB;
+      color: white;
+      border-radius: 6px;
+      transition: background 0.2s ease-in-out;
+    }
+    button:hover { background-color: #255bb5; }
+  </style>
+</head>
+<body>
+  <h1>Help Scout PWA</h1>
+  <p id="countdown">Redirecting in 100 seconds...</p>
+  <button id="launch">🚀 Launch Now</button>
+
+  <script>
+    const redirectDelay = 100; // seconds
+    let remaining = redirectDelay;
+
+    const goToHelpScout = () => {
+      window.location.replace("https://secure.helpscout.net/#/whats-next");
+    };
+
+    // Countdown display
+    const countdownEl = document.getElementById('countdown');
+    const timer = setInterval(() => {
+      remaining--;
+      countdownEl.textContent = `Redirecting in ${remaining} seconds...`;
+      if (remaining <= 0) {
+        clearInterval(timer);
+        goToHelpScout();
+      }
+    }, 1000);
+
+    // Manual button for early launch
+    document.getElementById('launch').addEventListener('click', goToHelpScout);
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+</body>
+</html>
